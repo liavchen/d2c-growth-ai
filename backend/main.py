@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Make sure Python can find local modules in backend/
+sys.path.append(os.path.dirname(__file__))
+
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from database import engine
@@ -8,14 +14,14 @@ from routers import fatigue
 async def lifespan(app: FastAPI):
     print("⏳ Creating tables...")
     Base.metadata.create_all(bind=engine)
-    yield  # App runs after this
-    print("🛑 Shutting down...")  # Runs on app shutdown
+    yield
+    print("🛑 Shutting down...")
 
 app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def root():
     return {"message": "App is working"}
-app.include_router(fatigue.router)  # 👈 Register the /predict endpoint
 
-
+# Register prediction endpoint
+app.include_router(fatigue.router)

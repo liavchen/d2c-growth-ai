@@ -2,13 +2,18 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from typing import List
 import pandas as pd
+import os
 import joblib
 
 router = APIRouter()
 
 # Load trained model and scaler
-model = joblib.load("random_forest_model.pkl")
-scaler = joblib.load("scaler.pkl")
+BASE_DIR = os.path.dirname(__file__)
+model_path = os.path.join(BASE_DIR, "..", "random_forest_model.pkl")
+scaler_path = os.path.join(BASE_DIR, "..", "scaler.pkl")
+
+model = joblib.load(model_path)
+scaler = joblib.load(scaler_path)
 
 class AdInput(BaseModel):
     ad_name: str
