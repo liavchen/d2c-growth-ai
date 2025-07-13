@@ -1,13 +1,13 @@
 from fastapi import FastAPI
-import os
+from database import engine
+from models import Base
 
 app = FastAPI()
+
+@app.on_event("startup")
+def startup():
+    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def read_root():
     return {"message": "🚀 Your D2C Growth AI is running!"}
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.environ.get("PORT", 8000))  # Use Railway's dynamic port
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
